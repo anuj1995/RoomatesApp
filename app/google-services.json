@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "717499991813",
+    "firebase_url": "https://roomatesapp-f5b48.firebaseio.com",
+    "project_id": "roomatesapp-f5b48",
+    "storage_bucket": "roomatesapp-f5b48.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:717499991813:android:3a4f5f17270dd431fb596c",
+        "android_client_info": {
+          "package_name": "edu.uga.cs.roomatesapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "717499991813-hicoj4f3pv0qdgvd9kfr63eghjsu23qf.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAAeZveW0ellU_jjLF_jBdG4b9JDZoGyJU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "717499991813-hicoj4f3pv0qdgvd9kfr63eghjsu23qf.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
