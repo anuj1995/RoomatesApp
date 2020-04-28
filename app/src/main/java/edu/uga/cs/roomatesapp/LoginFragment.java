@@ -59,13 +59,24 @@ public class LoginFragment extends Fragment {
                             // Sign in success, update UI with the signed-in user's information
                             Log.d(TAG, "signInWithEmail:success");
                             FirebaseUser user = mAuth.getCurrentUser();
-                            startActivity(new Intent(getActivity(),MainActivity.class));
+                            Intent i = new Intent(getActivity(),MainActivity.class);
+                            i.putExtra("UserName",user.getEmail());
+                            id.setText("");
+                            pw.setText("");
+                            id.clearFocus();
+                            id.clearFocus();
+                            startActivity(i);
+
                             //updateUI(user);
                         } else {
                             // If sign in fails, display a message to the user.
                             Log.w(TAG, "signInWithEmail:failure", task.getException());
                             Toast.makeText(getActivity().getApplicationContext(), "Authentication failed.",
                                     Toast.LENGTH_SHORT).show();
+                            id.setText("");
+                            pw.setText("");
+                            id.clearFocus();
+                            id.clearFocus();
                         }
                     });
         });

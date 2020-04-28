@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_marginHorizontal="10dp"
+    android:layout_marginTop="10dp"
+    android:layout_height="wrap_content"
+    card_view:cardBackgroundColor="@color/grey">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:weightSum="4"
+        android:baselineAligned="false">
+
+        <LinearLayout
+            android:layout_height="wrap_content"
+            android:layout_width="0dp"
+            android:layout_marginRight="5dp"
+            android:layout_marginEnd="5dp"
+            android:layout_weight="3"
+            android:orientation="vertical">
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/PurchasedListTextInputLayoutStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColorHint="@color/colorPrimary"
+                android:gravity="center_vertical"
+                android:hint="Item">
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/itemName"
+                    android:inputType="none"
+                    android:enabled="false"
+                    android:textColor="@color/black"
+                    android:cursorVisible="false"
+                    android:layout_gravity="center_vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/PurchasedListTextInputLayoutStyle"
+                android:layout_width="match_parent"
+                android:textColorHint="@color/colorPrimary"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:hint="Purchased by">
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/purchasedBy"
+                    android:inputType="none"
+                    android:textColor="@color/black"
+                    android:enabled="false"
+                    android:cursorVisible="false"
+                    android:layout_gravity="center_vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+            </com.google.android.material.textfield.TextInputLayout>
+        </LinearLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            style="@style/PurchasedListTextInputLayoutStyle"
+            android:layout_width="0dp"
+            android:textColorHint="@color/colorPrimary"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical"
+            android:layout_weight="1"
+            android:hint="Price">
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/price"
+                android:inputType="none"
+                android:textColor="@color/black"
+                android:enabled="false"
+                android:cursorVisible="false"
+                android:layout_gravity="center_vertical"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+    </LinearLayout>
+
+</androidx.cardview.widget.CardView>

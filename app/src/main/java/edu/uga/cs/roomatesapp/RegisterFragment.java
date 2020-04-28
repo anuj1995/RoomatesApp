@@ -1,5 +1,6 @@
 package edu.uga.cs.roomatesapp;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,8 +18,12 @@ import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 public class RegisterFragment extends Fragment {
+
+    DatabaseReference databaseReference;
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -37,7 +42,7 @@ public class RegisterFragment extends Fragment {
         final FirebaseAuth mAuth = FirebaseAuth.getInstance();
         final TextInputLayout pwLayout = view.findViewById(R.id.passwordLayout);
         final TextInputLayout rePwLayout = view.findViewById(R.id.reTypePasswordLayout);
-
+        databaseReference = FirebaseDatabase.getInstance().getReference("Users");
 
 
         register.setOnClickListener(new View.OnClickListener() {
@@ -53,10 +58,26 @@ public class RegisterFragment extends Fragment {
                             if (task.isSuccessful()) {
                                 Toast.makeText(getActivity().getApplicationContext(),
                                         "registered", Toast.LENGTH_SHORT).show();
+                                Intent intent = new Intent(getActivity(),MainActivity.class);
+                                intent.putExtra("UserName",email);
+                                id.setText("");
+                                pw.setText("");
+                                rePw.setText("");
+                                id.clearFocus();
+                                id.clearFocus();
+                                rePw.clearFocus();
+                                databaseReference.push().setValue(email);
+                                startActivity(intent);
                             } else {
                                 {
                                     Toast.makeText(getActivity().getApplicationContext(),
                                             task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                                    id.setText("");
+                                    pw.setText("");
+                                    rePw.setText("");
+                                    id.clearFocus();
+                                    id.clearFocus();
+                                    rePw.clearFocus();
                                 }
                             }
                         }

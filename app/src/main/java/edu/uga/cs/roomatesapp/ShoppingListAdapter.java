@@ -14,6 +14,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
+import androidx.core.util.Pair;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
@@ -25,11 +26,12 @@ public class ShoppingListAdapter extends RecyclerView.Adapter<ShoppingListAdapte
 
     private ArrayList<ShoppingListItem> shoppingList;
     private Context context;
-    private HashMap<Integer,Double> checkedItemsMap;
+    private HashMap<Pair<Integer,String>,Double> checkedItemsMap;
 
 
     public interface OnItemCheckListener {
         void onItemCheck(ShoppingListItem item,double price);
+        void onItemUncheck(ShoppingListItem item);
     }
 
     @NonNull
@@ -55,8 +57,10 @@ public class ShoppingListAdapter extends RecyclerView.Adapter<ShoppingListAdapte
 
         if(checkedItemsMap!=null
             && checkedItemsMap.size()!=0
-            && checkedItemsMap.get(shoppingList.get(position).getItemId())!= null){
-            holder.price.setText(shoppingList.get(position).getItemName());
+            && checkedItemsMap.get(new Pair(shoppingList.get(position).getItemId(),shoppingList.get(position).getItemName()))!= null){
+            holder.price.setText(String.valueOf(
+                    checkedItemsMap.get(
+                            new Pair(shoppingList.get(position).getItemId(),shoppingList.get(position).getItemName()))));
             holder.purchased.setChecked(true);
         }
 
@@ -70,10 +74,13 @@ public class ShoppingListAdapter extends RecyclerView.Adapter<ShoppingListAdapte
                 else onItemCheckListener.onItemCheck(shoppingList.get(position)
                         , Double.parseDouble(holder.price.getText().toString()));
             }
+            else{
+                onItemCheckListener.onItemUncheck(shoppingList.get(position));
+            }
         });
     }
 
-    void setCheckedItems(HashMap<Integer,Double> checkedItems){
+    void setCheckedItems(HashMap<Pair<Integer,String>,Double> checkedItems){
         checkedItemsMap = checkedItems;
     }
     void addNewData(ShoppingListItem item){
@@ -100,7 +107,7 @@ public class ShoppingListAdapter extends RecyclerView.Adapter<ShoppingListAdapte
 
     class ShoppingListViewHolder extends RecyclerView.ViewHolder{
 
-        TextView name;
+        EditText name;
         CheckBox purchased;
         EditText price;
         public ShoppingListViewHolder(@NonNull View itemView) {

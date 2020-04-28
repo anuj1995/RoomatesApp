@@ -3,4 +3,6 @@
     <string name="login">login</string>
     <string name="shopping_list">Shopping List</string>
     <string name="title_activity_main2">Main2Activity</string>
+    <string name="purchased_list">Purchased List</string>
+    <string name="settle_up">Settle Up</string>
 </resources>
