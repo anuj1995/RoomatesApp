@@ -34,7 +34,7 @@ public class RegisterFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-
+        // init views and references
         final EditText id = view.findViewById(R.id.userId);
         final EditText pw = view.findViewById(R.id.password);
         final EditText rePw = view.findViewById(R.id.reTypePassword);

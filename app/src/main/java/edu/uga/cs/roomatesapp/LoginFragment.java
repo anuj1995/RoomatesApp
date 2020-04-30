@@ -60,7 +60,7 @@ public class LoginFragment extends Fragment {
                             Log.d(TAG, "signInWithEmail:success");
                             FirebaseUser user = mAuth.getCurrentUser();
                             Intent i = new Intent(getActivity(),MainActivity.class);
-                            i.putExtra("UserName",user.getEmail());
+                            i.putExtra("UserName",email);
                             id.setText("");
                             pw.setText("");
                             id.clearFocus();

@@ -41,6 +41,12 @@ public class PurchasedListAdapter extends RecyclerView.Adapter<PurchasedListAdap
 
     }
 
+    /**
+     *
+     * @param item
+     * adds the new data item to the list and notifies the adapter
+     */
+
     public void addNewData(PurchasedListItem item){
         purchasedList.add(item);
         notifyDataSetChanged();

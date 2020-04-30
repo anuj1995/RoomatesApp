@@ -8,8 +8,10 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Button;
 import android.widget.TextView;
 
@@ -49,7 +51,9 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        archivedReference = FirebaseDatabase.getInstance().getReference().child("Archived");
+
+        // init views and database references
+        archivedReference = FirebaseDatabase.getInstance().getReference().child("Archive");
         purchasedListReference = FirebaseDatabase.getInstance().getReference().child("PurchasedListItems");
         userListReference = FirebaseDatabase.getInstance().getReference().child("Users");
         shoppingList = findViewById(R.id.viewShoppingList);
@@ -62,12 +66,14 @@ public class MainActivity extends AppCompatActivity {
         userOweList = new ArrayList<>();
         owingListAdapter = new OwingListAdapter(this,userOweList);
         allOwingReference = FirebaseDatabase.getInstance().getReference().child("Owing");
-
+        //recyclerView.setAdapter(owingListAdapter);
         String userName = getIntent().getStringExtra("UserName");
-        tv.setText("Welcome " + userName);
+        tv.setText( userName);
         owingListReference =FirebaseDatabase.getInstance().getReference().child("Owing")
                 .child(getUserName(userName));
 
+
+        // listeners to buttons
         shoppingList.setOnClickListener(v -> {
             Intent i = new Intent(this,ShoppingListActivity.class);
             i.putExtra("User",userName);
@@ -105,6 +111,8 @@ public class MainActivity extends AppCompatActivity {
 
         });
 
+
+        // user added handled
         userListReference.addChildEventListener(new ChildEventListener() {
             @RequiresApi(api = Build.VERSION_CODES.N)
             @Override
@@ -140,20 +148,44 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-
+        // display the updated owing
         owingListReference.addChildEventListener(new ChildEventListener() {
             @RequiresApi(api = Build.VERSION_CODES.N)
             @Override
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
                 ArrayList<Double> userOwesList = new ArrayList<>();
-                AtomicBoolean contains = new AtomicBoolean(false);
-                users.forEach(s1 -> {
-                    if(s1.contains(dataSnapshot.getKey())) contains.set(true);
-                });
-                if(contains.get()){
-                    dataSnapshot.getChildren().forEach(dataSnapshot1 ->{
-                        userOwesList.add(dataSnapshot1.getValue(Double.class));
-                    } );
+                boolean contains = false;
+                for (String user : users) {
+                    if (getUserName(user).matches(dataSnapshot.getKey())){
+                        contains = true;
+                        break;
+                    }
+                }
+                if (contains) {
+                    for (DataSnapshot dataSnapshot2 : dataSnapshot.getChildren()) {
+                        userOwesList.add(dataSnapshot2.getValue(Double.class));
+                    }
+                    UserOwe userOwe = new UserOwe(dataSnapshot.getKey());
+                    userOwe.setAmount(userOwesList.stream().mapToDouble(i -> i).sum());
+                    owingListAdapter.updateData(userOwe);
+                    recyclerView.setAdapter(owingListAdapter);
+                }
+            }
+            @RequiresApi(api = Build.VERSION_CODES.N)
+            @Override
+            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                ArrayList<Double> userOwesList = new ArrayList<>();
+                boolean contains = false;
+                for (String user : users) {
+                    if (getUserName(user).matches(dataSnapshot.getKey())){
+                        contains = true;
+                        break;
+                    }
+                }
+                if (contains) {
+                    for (DataSnapshot dataSnapshot2 : dataSnapshot.getChildren()) {
+                        userOwesList.add(dataSnapshot2.getValue(Double.class));
+                    }
                     UserOwe userOwe = new UserOwe(dataSnapshot.getKey());
                     userOwe.setAmount(userOwesList.stream().mapToDouble(i -> i).sum());
                     owingListAdapter.updateData(userOwe);
@@ -161,21 +193,16 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
 
-            @Override
-            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-
-            }
-
             @RequiresApi(api = Build.VERSION_CODES.N)
             @Override
             public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
-               users.forEach(s -> {
-                   if (!s.matches(userName)){
-                       UserOwe userOwe = new UserOwe(s);
-                       owingListAdapter.updateData(userOwe);
-                       recyclerView.setAdapter(owingListAdapter);
-                   }
-               });
+                users.forEach(s -> {
+                    if (!s.matches(userName)){
+                        UserOwe userOwe = new UserOwe(s);
+                        owingListAdapter.updateData(userOwe);
+                        recyclerView.setAdapter(owingListAdapter);
+                    }
+                });
             }
 
             @Override
@@ -190,9 +217,13 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
-
     }
 
+    /**
+     *
+     * @param s
+     * @return a string email with out @example.com
+     */
     private String getUserName(String s){
         return s.substring(0,s.indexOf("@"));
     }

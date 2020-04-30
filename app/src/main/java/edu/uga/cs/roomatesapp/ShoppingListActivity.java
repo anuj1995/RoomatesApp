@@ -41,7 +41,7 @@ public class ShoppingListActivity extends AppCompatActivity implements AddItemDi
     FloatingActionButton fab;
     LinearLayoutManager linearLayoutManager;
     Parcelable listState;
-    HashMap<Pair<Integer,String>,Double> checkedItems;
+    HashMap<Pair<String,String>,Double> checkedItems;
     FloatingActionButton fab2;
     int count = 0;
     String userName;
@@ -114,13 +114,8 @@ public class ShoppingListActivity extends AppCompatActivity implements AddItemDi
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
                 ShoppingListItem item ;
                 item = dataSnapshot.getValue(ShoppingListItem.class);
-                if (item != null) {
-                    item.setItemId(count);
-                }
-
                 shoppingListAdapter.addNewData(item);
                 recyclerView.setAdapter(shoppingListAdapter);
-                count ++;
 
             }
 
@@ -133,7 +128,6 @@ public class ShoppingListActivity extends AppCompatActivity implements AddItemDi
             public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
                 ShoppingListItem item = dataSnapshot.getValue(ShoppingListItem.class);
                 shoppingListAdapter.removeData(item);
-                count --;
 
             }
 
@@ -191,9 +185,10 @@ public class ShoppingListActivity extends AppCompatActivity implements AddItemDi
     }
     @Override
     public void sendTexts(String itemName) {
-        ShoppingListItem item = new ShoppingListItem(itemName,count);
+        String x = databaseReference.push().getKey();
+        ShoppingListItem item = new ShoppingListItem(itemName,x);
         item.setPurchased(false);
-        databaseReference.child(String.valueOf(count)).setValue(item);
+        databaseReference.child(x).setValue(item);
     }
 
     private void openDialog(){
@@ -210,7 +205,7 @@ public class ShoppingListActivity extends AppCompatActivity implements AddItemDi
     @Override
     protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
-        checkedItems = (HashMap<Pair<Integer, String>, Double>) savedInstanceState.getSerializable("checked List");
+        checkedItems = (HashMap<Pair<String, String>, Double>) savedInstanceState.getSerializable("checked List");
     }
 
     @Override
@@ -220,16 +215,25 @@ public class ShoppingListActivity extends AppCompatActivity implements AddItemDi
     }
 
 
+
     @RequiresApi(api = Build.VERSION_CODES.N)
+    /**
+     * method to move the item to purchased list and remove the item form shopping list
+     * Also put a charge on other roommates for the item purchased
+     */
     private void moveToPurchased(){
 
-        for(Map.Entry<Pair<Integer, String>, Double> itemPrice : checkedItems.entrySet()){
-
+        for(Map.Entry<Pair<String, String>, Double> itemPrice : checkedItems.entrySet()){
+            //remove item form shopping list
             databaseReference.child(String.valueOf(itemPrice.getKey().first)).removeValue();
+
+            // Add item to the purchased list
             PurchasedListItem p = new PurchasedListItem(itemPrice.getKey().second,itemPrice.getValue(),userName);
             p.setItemId((int) (purchasedCount));
             purchasedListRef.child(String.valueOf(purchasedCount)).setValue(p);
             purchasedCount++;
+
+            // put a charge on roommates
             userList.forEach(s -> {
                 if(!s.equals(userName)){
                     owingDatabaseReference.child(getUserName(userName))
@@ -240,9 +244,16 @@ public class ShoppingListActivity extends AppCompatActivity implements AddItemDi
             });
 
         }
+        //clear the selection map
         checkedItems.clear();
 
     }
+
+    /**
+     *
+     * @param s
+     * @return a string email without "@example.com"
+     */
     private String getUserName(String s){
         return s.substring(0,s.indexOf("@"));
     }

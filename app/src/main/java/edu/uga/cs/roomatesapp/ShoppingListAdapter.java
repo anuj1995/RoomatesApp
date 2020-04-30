@@ -26,7 +26,7 @@ public class ShoppingListAdapter extends RecyclerView.Adapter<ShoppingListAdapte
 
     private ArrayList<ShoppingListItem> shoppingList;
     private Context context;
-    private HashMap<Pair<Integer,String>,Double> checkedItemsMap;
+    private HashMap<Pair<String,String>,Double> checkedItemsMap;
 
 
     public interface OnItemCheckListener {
@@ -55,6 +55,7 @@ public class ShoppingListAdapter extends RecyclerView.Adapter<ShoppingListAdapte
         if(!shoppingList.isEmpty()){
             holder.name.setText(shoppingList.get(position).getItemName());}
 
+        // restore state of the selection
         if(checkedItemsMap!=null
             && checkedItemsMap.size()!=0
             && checkedItemsMap.get(new Pair(shoppingList.get(position).getItemId(),shoppingList.get(position).getItemName()))!= null){
@@ -64,7 +65,7 @@ public class ShoppingListAdapter extends RecyclerView.Adapter<ShoppingListAdapte
             holder.purchased.setChecked(true);
         }
 
-
+        // implement onCheckListener for items
         holder.purchased.setOnClickListener(v -> {
             if(holder.purchased.isChecked()){
                 if(holder.price.getText().toString().isEmpty()){
@@ -80,7 +81,7 @@ public class ShoppingListAdapter extends RecyclerView.Adapter<ShoppingListAdapte
         });
     }
 
-    void setCheckedItems(HashMap<Pair<Integer,String>,Double> checkedItems){
+    void setCheckedItems(HashMap<Pair<String,String>,Double> checkedItems){
         checkedItemsMap = checkedItems;
     }
     void addNewData(ShoppingListItem item){

@@ -34,6 +34,8 @@ public class PurchasedListActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_purchasedlist);
+
+        // init views and database references
         userName = getIntent().getStringExtra("UserName");
         databaseReference = FirebaseDatabase.getInstance().getReference("PurchasedListItems");
         recyclerView = findViewById(R.id.recycler_view);
@@ -42,6 +44,8 @@ public class PurchasedListActivity extends AppCompatActivity {
         purchasedList = new ArrayList<>();
         purchasedListAdapter = new PurchasedListAdapter(this,purchasedList);
 
+
+        // shopping list updating the purchased list
         databaseReference.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
@@ -58,7 +62,10 @@ public class PurchasedListActivity extends AppCompatActivity {
 
             @Override
             public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
-
+                PurchasedListItem item;
+                item = dataSnapshot.getValue(PurchasedListItem.class);
+                purchasedListAdapter.removeData(item);
+                recyclerView.setAdapter(purchasedListAdapter);
             }
 
             @Override
@@ -73,6 +80,7 @@ public class PurchasedListActivity extends AppCompatActivity {
         });
     }
 
+    // up navigation implemented
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if(item.getItemId() == android.R.id.home){
             Intent i = new Intent(this,MainActivity.class);

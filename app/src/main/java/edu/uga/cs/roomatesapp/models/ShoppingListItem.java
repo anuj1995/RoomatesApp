@@ -3,10 +3,10 @@ package edu.uga.cs.roomatesapp.models;
 public class ShoppingListItem {
     private String itemName;
     private boolean purchased;
-    private int itemId;
+    private String itemId;
 
     public ShoppingListItem(){}
-    public ShoppingListItem(String itemName,int itemId) {
+    public ShoppingListItem(String itemName,String itemId) {
         this.itemName = itemName; this.itemId =itemId;}
 
     public String getItemName() {
@@ -25,11 +25,12 @@ public class ShoppingListItem {
         this.purchased = purchased;
     }
 
-    public int getItemId() {
+    public void setItemId(String itemId) {
+        this.itemId = itemId;
+    }
+
+    public String getItemId() {
         return itemId;
     }
 
-    public void setItemId(int itemId) {
-        this.itemId = itemId;
-    }
 }

@@ -44,7 +44,7 @@ public class OwingListAdapter extends RecyclerView.Adapter<OwingListAdapter.Owin
                 holder.owe.setText(new DecimalFormat("##.##").format(Math.abs(userOweList.get(position).getAmount())));
             }else if(userOweList.get(position).getAmount() > 0){
                 holder.owe.setText(new DecimalFormat("##.##").format((Math.abs(userOweList.get(position).getAmount()))));
-                holder.oweAmountLayout.setHint("You owe");
+                holder.oweAmountLayout.setHint("Owes you");
             }
             else{
                 holder.owe.setText("");
@@ -79,6 +79,11 @@ public class OwingListAdapter extends RecyclerView.Adapter<OwingListAdapter.Owin
         }
     }
 
+    /**
+     *
+     * @param userOwe
+     * adds the new data item to the list and notifies the adapter
+     */
     public void addNewData(UserOwe userOwe){
         userOweList.add(userOwe);
         notifyDataSetChanged();
@@ -96,6 +101,12 @@ public class OwingListAdapter extends RecyclerView.Adapter<OwingListAdapter.Owin
         }
     }
 
+
+    /**
+     *
+     * @param s
+     * @return a string email without @example.com
+     */
     private String getUserName(String s){
         return s.substring(0,s.indexOf("@"));
     }
